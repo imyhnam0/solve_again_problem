@@ -33,12 +33,30 @@ const TitlePage = () => {
   // 현재 제목 가져오기
   const currentTitle = titles.find((t) => t.id === parseInt(titleId))?.title || "제목 없음";
 
-  const handleAddProblem = () => {
-    const newId = problems.length > 0 ? problems[problems.length - 1].id + 1 : 1;
-    const newEntry = { id: newId, name: newTitle };
-    setProblems((prev) => [...prev, newEntry]);
-    setNewTitle("");
-    setShowInput(false);
+   // 문제 추가 (백엔드 저장)
+   const handleAddProblem = async () => {
+    if (!newTitle.trim()) return;
+
+    try {
+      const response = await fetch("http://your-backend-url/problems", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: newTitle, titleId: parseInt(titleId) }),
+      });
+
+      if (!response.ok) {
+        throw new Error("문제를 저장하는 중 오류가 발생했습니다");
+      }
+
+      const newProblem = await response.json();
+      setProblems((prev) => [...prev, newProblem]); // 새로운 문제 추가
+      setNewTitle("");
+      setShowInput(false);
+    } catch (error) {
+      console.error(error.message);
+    }
   };
 
   return (

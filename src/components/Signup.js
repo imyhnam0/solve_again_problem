@@ -30,7 +30,7 @@ const Signup = () => {
 
     try {
       const response = await fetch(
-        "http://125.250.17.196:1234/api/register",
+        "http://localhost:8080/api/register",
         {
           method: "POST",
           headers: {
